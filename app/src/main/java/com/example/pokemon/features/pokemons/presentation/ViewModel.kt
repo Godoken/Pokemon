@@ -16,7 +16,7 @@ class ViewModel(private val interactor: Interactor) : ViewModel() {
     private var previousPageUrl: String? = null
 
     private lateinit var pokemons: MutableLiveData<List<Pokemon>>
-    private lateinit var updateSort: MutableLiveData<Boolean>
+    private lateinit var updateSort: MutableLiveData<List<Pokemon>>
     private lateinit var progress: MutableLiveData<String>
 
     fun expandPokemons(notSwipeRefresh: Boolean) : MutableLiveData<List<Pokemon>> {
@@ -53,21 +53,25 @@ class ViewModel(private val interactor: Interactor) : ViewModel() {
         return progress
     }
 
-    fun updateSort(criterion: String): MutableLiveData<Boolean> {
+    fun updateSort(criterion: String, pokemons: List<Pokemon>, isChecked: Boolean): MutableLiveData<List<Pokemon>> {
         updateSort = MutableLiveData()
-        val observable: Observable<Boolean> = interactor.updateSort(criterion)
-        val observer: Observer<Boolean> = object : Observer<Boolean> {
+        val observable: Observable<List<Pokemon>> = interactor.updateSort(criterion, pokemons, isChecked)
+        val observer: Observer<List<Pokemon>> = object : Observer<List<Pokemon>> {
             override fun onSubscribe(d: Disposable) {
                 progress.postValue("onSubscribe")
             }
 
-            override fun onNext(result: Boolean) {
-                updateSort.postValue(result)
+            override fun onNext(pokemons: List<Pokemon>) {
+                updateSort.postValue(pokemons)
             }
 
-            override fun onError(e: Throwable) {}
+            override fun onError(e: Throwable) {
+                progress.postValue("onError")
+            }
 
-            override fun onComplete() {}
+            override fun onComplete() {
+                progress.postValue("onComplete")
+            }
         }
         observable
             .observeOn(AndroidSchedulers.mainThread())

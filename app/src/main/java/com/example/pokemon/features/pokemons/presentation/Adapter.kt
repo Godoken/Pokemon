@@ -35,7 +35,7 @@ class Adapter (context: Context, private var listener: Listener) : RecyclerView.
     }
 
     fun getPokemons() : List<Pokemon> {
-        return pokemons
+        return this.pokemons
     }
 
     fun expandPokemons(pokemons: List<Pokemon>) {
