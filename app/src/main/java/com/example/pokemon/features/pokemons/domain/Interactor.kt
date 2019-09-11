@@ -1,7 +1,7 @@
 package com.example.pokemon.features.pokemons.domain
 
-import com.example.pokemon.features.pokemons.data.network.responses.PokemonsResponse
 import com.example.pokemon.features.pokemons.domain.model.Pokemon
+import com.example.pokemon.features.pokemons.domain.model.PokemonsResponse
 import io.reactivex.Observable
 
 interface Interactor {
@@ -11,4 +11,5 @@ interface Interactor {
         isChecked: Boolean
     ): Observable<List<Pokemon>>
     fun expandPokemons(offset: Int): Observable<PokemonsResponse>
+    fun newPokemons(count: Int?): Observable<PokemonsResponse>
 }

@@ -1,8 +1,9 @@
 package com.example.pokemon.features.pokemons.domain
 
-import com.example.pokemon.features.pokemons.data.network.responses.PokemonsResponse
+import com.example.pokemon.features.pokemons.domain.model.PokemonsResponse
 import io.reactivex.Observable
 
 interface Repository {
-    fun expandPokemons(offset: Int): Observable<PokemonsResponse>
+    fun expandPokemons(offset: Int, limitPage: Int): Observable<PokemonsResponse>
+    fun newPokemons(randomOffset: Int, limitPage: Int): Observable<PokemonsResponse>
 }

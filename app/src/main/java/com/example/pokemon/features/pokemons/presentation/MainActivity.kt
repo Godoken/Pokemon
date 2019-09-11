@@ -1,5 +1,6 @@
 package com.example.pokemon.features.pokemons.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
@@ -8,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemon.R
+import com.example.pokemon.features.details.presentation.DetailsActivity
 import com.example.pokemon.features.popup.ProgressFragment
 import com.example.pokemon.features.popup.ServerErrorFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,8 +39,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         })
 
         adapter = Adapter(this@MainActivity, object : Adapter.Listener {
-            override fun onSelect(name: String) {
-                // Navigate to activity with details of the pokemon by Name
+            override fun onSelect(baseParameters: List<String>,
+                                  typeNames: String) {
+                startActivity(Intent(this@MainActivity, DetailsActivity::class.java)
+                    .putStringArrayListExtra("baseParameters", ArrayList(baseParameters))
+                    .putExtra("typeNames", typeNames))
             }
         })
         pokemon_recycler_view.adapter = adapter
@@ -58,6 +63,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         attack_checkBox.setOnClickListener(this)
         defense_checkBox.setOnClickListener(this)
         hp_checkBox.setOnClickListener(this)
+
+        button.setOnClickListener {
+            viewModel.newPokemons().observe(this@MainActivity, Observer {
+                attack_checkBox.isChecked = false
+                defense_checkBox.isChecked = false
+                hp_checkBox.isChecked = false
+                adapter.setPokemons(it)
+            })
+        }
     }
 
     override fun onClick(v: View?) {

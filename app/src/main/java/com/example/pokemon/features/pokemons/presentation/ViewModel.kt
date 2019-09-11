@@ -2,9 +2,9 @@ package com.example.pokemon.features.pokemons.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.pokemon.features.pokemons.data.network.responses.PokemonsResponse
 import com.example.pokemon.features.pokemons.domain.Interactor
 import com.example.pokemon.features.pokemons.domain.model.Pokemon
+import com.example.pokemon.features.pokemons.domain.model.PokemonsResponse
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,9 +14,11 @@ class ViewModel(private val interactor: Interactor) : ViewModel() {
 
     private var nextPageUrl: String? = null
     private var previousPageUrl: String? = null
+    private var count: Int? = null
 
     private lateinit var pokemons: MutableLiveData<List<Pokemon>>
     private lateinit var updateSort: MutableLiveData<List<Pokemon>>
+    private lateinit var newPokemons: MutableLiveData<List<Pokemon>>
     private lateinit var progress: MutableLiveData<String>
 
     fun expandPokemons(notSwipeRefresh: Boolean) : MutableLiveData<List<Pokemon>> {
@@ -31,6 +33,7 @@ class ViewModel(private val interactor: Interactor) : ViewModel() {
             override fun onNext(pokemonsResult: PokemonsResponse) {
                 nextPageUrl = pokemonsResult.next
                 previousPageUrl = pokemonsResult.previous
+                count = pokemonsResult.count
                 pokemons.postValue(pokemonsResult.results)
             }
 
@@ -77,5 +80,34 @@ class ViewModel(private val interactor: Interactor) : ViewModel() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observer)
         return updateSort
+    }
+
+    fun newPokemons(): MutableLiveData<List<Pokemon>> {
+        newPokemons = MutableLiveData()
+        val observable: Observable<PokemonsResponse> = interactor.newPokemons(count)
+        val observer: Observer<PokemonsResponse> = object : Observer<PokemonsResponse> {
+            override fun onSubscribe(d: Disposable) {
+                progress.postValue("onSubscribe")
+            }
+
+            override fun onNext(pokemonsResult: PokemonsResponse) {
+                nextPageUrl = pokemonsResult.next
+                previousPageUrl = pokemonsResult.previous
+                count = pokemonsResult.count
+                newPokemons.postValue(pokemonsResult.results)
+            }
+
+            override fun onError(e: Throwable) {
+                progress.postValue("onError")
+            }
+
+            override fun onComplete() {
+                progress.postValue("onComplete")
+            }
+        }
+        observable
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer)
+        return newPokemons
     }
 }

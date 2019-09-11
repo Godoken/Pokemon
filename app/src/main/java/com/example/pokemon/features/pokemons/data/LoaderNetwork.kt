@@ -1,6 +1,6 @@
 package com.example.pokemon.features.pokemons.data
 
-import com.example.pokemon.features.pokemons.data.network.responses.PokemonsResponse
+import com.example.pokemon.features.pokemons.domain.model.PokemonsResponse
 import io.reactivex.Observable
 
 interface LoaderNetwork {

@@ -1,6 +1,4 @@
-package com.example.pokemon.features.pokemons.data.network.responses
-
-import com.example.pokemon.features.pokemons.domain.model.Pokemon
+package com.example.pokemon.features.pokemons.domain.model
 
 class PokemonsResponse (val count: Int,
                         val next: String?,

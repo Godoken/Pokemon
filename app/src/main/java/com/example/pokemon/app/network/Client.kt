@@ -1,4 +1,4 @@
-package com.example.pokemon.app
+package com.example.pokemon.app.network
 
 import com.example.pokemon.BuildConfig
 import com.example.pokemon.features.pokemons.data.network.ApiPokemon

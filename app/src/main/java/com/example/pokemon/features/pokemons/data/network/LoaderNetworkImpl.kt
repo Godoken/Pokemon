@@ -1,8 +1,8 @@
 package com.example.pokemon.features.pokemons.data.network
 
 import com.example.pokemon.features.pokemons.data.LoaderNetwork
-import com.example.pokemon.features.pokemons.data.network.responses.PokemonsResponse
 import com.example.pokemon.features.pokemons.domain.model.Pokemon
+import com.example.pokemon.features.pokemons.domain.model.PokemonsResponse
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -19,7 +19,12 @@ class LoaderNetworkImpl(private val apiPokemon: ApiPokemon) : LoaderNetwork {
                         pokemonsFull.add(it)
                     }
                 }
-                PokemonsResponse(it.count, it.next, it.previous, pokemonsFull)
+                PokemonsResponse(
+                    it.count,
+                    it.next,
+                    it.previous,
+                    pokemonsFull
+                )
             }
             .subscribeOn(Schedulers.io())
     }

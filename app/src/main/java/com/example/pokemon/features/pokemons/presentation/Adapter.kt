@@ -52,36 +52,31 @@ class Adapter (context: Context, private var listener: Listener) : RecyclerView.
         private val pokemonDefense: TextView = item.findViewById(R.id.pokemon_defense)
         private val pokemonImage: ImageView = item.findViewById(R.id.pokemon_image)
 
-        private var attack = 0
-        private var defense = 0
-        private var hp = 0
-
         fun bind(pokemon: Pokemon) {
             title.text = pokemon.name
             pokemon.stats.forEach {
                 when (it.stat.name) {
-                    "attack" -> {
-                        pokemonAttack.text = "Attack: ".plus(it.base_stat.toString())
-                        attack += it.base_stat
-                    }
-                    "defense" -> {
-                        pokemonDefense.text = "Defense: ".plus(it.base_stat.toString())
-                        defense += it.base_stat
-                    }
-                    "hp" -> {
-                        pokemonHp.text = "HP: ".plus(it.base_stat.toString())
-                        hp += it.base_stat
-                    }
+                    "attack" -> { pokemonAttack.text = "Attack: ".plus(it.base_stat.toString()) }
+                    "defense" -> { pokemonDefense.text = "Defense: ".plus(it.base_stat.toString()) }
+                    "hp" -> { pokemonHp.text = "HP: ".plus(it.base_stat.toString()) }
                 }
             }
-            /*Picasso.get()
-                .load(post.PostImageURL)
-                .into(postImage)*/
-            itemView.setOnClickListener { listener.onSelect(pokemon.name) }
+
+            itemView.setOnClickListener {
+                var typeNames = "Types: "
+                pokemon.types.forEach {
+                    typeNames += "${it.type.name} "
+                }
+                listener.onSelect(listOf(pokemon.name, pokemonAttack.text.toString(), pokemonDefense.text.toString(), pokemonHp.text.toString()),
+                    typeNames)
+            }
         }
     }
 
     interface Listener {
-        fun onSelect(name: String)
+        fun onSelect(
+            baseParameters: List<String>,
+            typeNames: String
+        )
     }
 }
